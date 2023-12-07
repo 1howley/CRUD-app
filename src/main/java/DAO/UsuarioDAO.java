@@ -2,9 +2,11 @@ package DAO;
 
 import connection.Connect;
 import entity.Usuario;
+import java.util.List;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 
 public class UsuarioDAO {
@@ -96,6 +98,46 @@ public class UsuarioDAO {
             
             return false;
             
+        }
+    }
+    public List<Usuario> getUsuario() {
+        ArrayList<Usuario> listaUser = new ArrayList<>();
+        String sql = "SELECT nome, login, email FROM loginbd.usuario;";
+
+        try {
+            
+            PreparedStatement ps = Connect.getConexao().prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Usuario user = new Usuario();
+
+                user.setNome(rs.getString("nome"));
+                user.setLogin(rs.getString("login"));
+                user.setEmail(rs.getString("email"));
+
+                listaUser.add(user);
+
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }       
+
+        return listaUser;
+    }
+     public void deleteUser(String login) {
+        String sql = "DELETE FROM usuario WHERE login=?";
+
+        try {
+            PreparedStatement ps = Connect.getConexao().prepareStatement(sql);
+            ps.setString(1, login);
+
+            ps.execute();
+            ps.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
     

@@ -1,8 +1,11 @@
 package main;
 
+import DAO.UsuarioDAO;
+import entity.Usuario;
 import java.awt.Color;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.List;
 import javax.swing.JButton;
 import javax.swing.plaf.basic.BasicButtonUI;
 
@@ -51,6 +54,10 @@ public class ScreenHome extends javax.swing.JFrame {
         btnHome = new javax.swing.JButton();
         btnUser = new javax.swing.JButton();
         btnSettings = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jList1 = new javax.swing.JList<>();
+        btnAtualiza = new javax.swing.JButton();
+        btnExcluir = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -66,7 +73,6 @@ public class ScreenHome extends javax.swing.JFrame {
 
         btnHome.setBackground(new java.awt.Color(75, 75, 75));
         btnHome.setForeground(new java.awt.Color(255, 255, 255));
-        btnHome.setIcon(new javax.swing.ImageIcon("D:\\Codigos\\dataBase\\src\\main\\java\\icons\\iconHome.png")); // NOI18N
         btnHome.setBorder(null);
         btnHome.setContentAreaFilled(false);
         btnHome.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -76,7 +82,6 @@ public class ScreenHome extends javax.swing.JFrame {
         panelNav.add(panelUsing);
 
         btnUser.setBackground(new java.awt.Color(75, 75, 75));
-        btnUser.setIcon(new javax.swing.ImageIcon("D:\\Codigos\\dataBase\\src\\main\\java\\icons\\iconUser.png")); // NOI18N
         btnUser.setBorder(null);
         btnUser.setContentAreaFilled(false);
         btnUser.setPreferredSize(new java.awt.Dimension(50, 50));
@@ -88,7 +93,6 @@ public class ScreenHome extends javax.swing.JFrame {
         panelNav.add(btnUser);
 
         btnSettings.setBackground(new java.awt.Color(75, 75, 75));
-        btnSettings.setIcon(new javax.swing.ImageIcon("D:\\Codigos\\dataBase\\src\\main\\java\\icons\\iconSettings.png")); // NOI18N
         btnSettings.setBorder(null);
         btnSettings.setContentAreaFilled(false);
         btnSettings.setPreferredSize(new java.awt.Dimension(50, 50));
@@ -99,17 +103,57 @@ public class ScreenHome extends javax.swing.JFrame {
         });
         panelNav.add(btnSettings);
 
+        jList1.setForeground(new java.awt.Color(60, 63, 65));
+        jList1.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                jList1FocusGained(evt);
+            }
+        });
+        jScrollPane1.setViewportView(jList1);
+
+        btnAtualiza.setText("Atualizar");
+        btnAtualiza.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAtualizaActionPerformed(evt);
+            }
+        });
+
+        btnExcluir.setText("Excluir");
+        btnExcluir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExcluirActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout panelMainLayout = new javax.swing.GroupLayout(panelMain);
         panelMain.setLayout(panelMainLayout);
         panelMainLayout.setHorizontalGroup(
             panelMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelMainLayout.createSequentialGroup()
                 .addComponent(panelNav, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 762, Short.MAX_VALUE))
+                .addGroup(panelMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panelMainLayout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 732, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 18, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelMainLayout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnAtualiza)
+                        .addGap(77, 77, 77)
+                        .addComponent(btnExcluir)
+                        .addGap(40, 40, 40))))
         );
         panelMainLayout.setVerticalGroup(
             panelMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(panelNav, javax.swing.GroupLayout.DEFAULT_SIZE, 550, Short.MAX_VALUE)
+            .addGroup(panelMainLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 469, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(panelMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnAtualiza)
+                    .addComponent(btnExcluir))
+                .addGap(23, 23, 23))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -138,6 +182,45 @@ public class ScreenHome extends javax.swing.JFrame {
         new ScreenSettings().setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnSettingsActionPerformed
+
+    private void jList1FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jList1FocusGained
+        // TODO add your handling code here:
+        List<Usuario> listaUser = new UsuarioDAO().getUsuario();
+
+
+        String things[] = new String[listaUser.size()];
+        int x = 0;
+        while (x < listaUser.size()) {
+
+            things[x] = "Nome: " + listaUser.get(x).getNome() + " - Login: " + listaUser.get(x).getLogin() + " - Email: " + listaUser.get(x).getEmail();
+
+            x++;
+        }
+        
+        jList1.setModel(new javax.swing.DefaultComboBoxModel(things));
+    }//GEN-LAST:event_jList1FocusGained
+
+    private void btnAtualizaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAtualizaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnAtualizaActionPerformed
+
+    private void btnExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirActionPerformed
+        // TODO add your handling code here:
+        UsuarioDAO user = new UsuarioDAO();
+        
+        String[] parts = jList1.getSelectedValue().split(" - ");
+        String login = null;
+
+        for (String part : parts) {
+            if (part.startsWith("Login:")) {
+                login = part.split(":")[1].trim();
+                break;
+            }
+        }
+
+        new UsuarioDAO().deleteUser(login);
+        
+    }//GEN-LAST:event_btnExcluirActionPerformed
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -172,9 +255,13 @@ public class ScreenHome extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAtualiza;
+    private javax.swing.JButton btnExcluir;
     private javax.swing.JButton btnHome;
     private javax.swing.JButton btnSettings;
     private javax.swing.JButton btnUser;
+    private javax.swing.JList<String> jList1;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPanel panelMain;
     private javax.swing.JPanel panelNav;
     private javax.swing.JPanel panelUsing;
